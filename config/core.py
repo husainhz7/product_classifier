@@ -34,7 +34,7 @@ class AppConfig(BaseModel):
     test_size:float
     random_state: int
 
-def create_and_validate_config(parsed_config: YAML = None) -> Config:
+def create_and_validate_config(parsed_config: YAML = None) -> AppConfig:
     """Run validation on config values."""
     with open(CONFIG_FILE_PATH, "r") as conf_file:
         parsed_config = load(conf_file.read())
