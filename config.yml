@@ -1,0 +1,16 @@
+# Package Overview
+package_name: product_model
+
+# Data Files
+training_data_file: Amazon-Products.csv
+test_data_file: test.csv
+
+pipeline_name: product_model
+pipeline_save_file: product__model_output_v
+
+
+# set train/test split
+test_size: 0.20
+
+# to set the random seed
+random_state: 42
