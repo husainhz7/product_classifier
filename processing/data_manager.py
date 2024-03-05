@@ -1,9 +1,13 @@
 
 from pathlib import Path
 import pandas as pd
-from config.core import DATASET_DIR, TRAINED_MODEL_DIR, config
+from config.core import DATASET_DIR, TRAINED_MODEL_DIR, PACKAGE_ROOT, config
 import re
 import joblib
+from sklearn.pipeline import Pipeline
+
+with open(PACKAGE_ROOT / "VERSION") as version_file:
+    __version__ = version_file.read().strip()
 
 def remove_special_characters(text):
     pattern = r'[^a-zA-Z0-9\s]'
@@ -11,15 +15,15 @@ def remove_special_characters(text):
     return text
 
 def remove_between_paranthesis(text):
-    return re.sub('\([^])*\]', '', text)
-
+    pattern = r'\(([^)]*)\)'
+    return re.sub(pattern, '', text)
 
 def pre_pipeline_preparation(*, data_frame: pd.DataFrame) -> pd.DataFrame:
     # drop unnecessary variables
     data_frame = data_frame[data_frame.columns[1:3]]
 
-    data_frame.name = data_frame.name.apply(remove_special_characters)
-    data_frame.name = data_frame.name.apply(remove_between_paranthesis)
+    data_frame['name'] = data_frame['name'].apply(remove_special_characters)
+    data_frame['name'] = data_frame['name'].apply(remove_between_paranthesis)
 
     return data_frame
 
@@ -39,7 +43,7 @@ def save_pipeline(*, pipeline_to_persist: Pipeline) -> None:
     """
 
     # Prepare versioned save file name
-    save_file_name = f"{config.app_config.pipeline_save_file}{_version}.pkl"
+    save_file_name = f"{config.pipeline_save_file}{__version__}.pkl"
     save_path = TRAINED_MODEL_DIR / save_file_name
 
     joblib.dump(pipeline_to_persist, save_path)
