@@ -20,7 +20,7 @@ def remove_between_paranthesis(text):
 
 def pre_pipeline_preparation(*, data_frame: pd.DataFrame) -> pd.DataFrame:
     # drop unnecessary variables
-    data_frame = data_frame[data_frame.columns[1:3]]
+    data_frame = data_frame.drop(columns=data_frame.columns.difference(['name', 'main_category']))
 
     data_frame['name'] = data_frame['name'].apply(remove_special_characters)
     data_frame['name'] = data_frame['name'].apply(remove_between_paranthesis)

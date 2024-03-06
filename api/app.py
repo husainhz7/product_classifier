@@ -1,10 +1,13 @@
-from typing import Any,Optional
-from fastapi import APIRouter, FastAPI, Request
+from typing import Any,Optional, List
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.encoders import jsonable_encoder
+from predict import make_prediction
+import pandas as pd
+import numpy as np
+import json
 from pydantic import BaseModel
-
 
 class PredictionResults(BaseModel):
     errors: Optional[Any]
@@ -12,10 +15,16 @@ class PredictionResults(BaseModel):
     #predictions: Optional[List[int]]
     predictions: Optional[int]
 
+class DataInputSchema(BaseModel):
+    main_category: Optional[str]
+    name: Optional[str]
+
+class MultipleDataInputs(BaseModel):
+    inputs: List[DataInputSchema]
+
 app = FastAPI(
     title="product_category_classifier",
 )
-
 
 @app.get("/")
 def index(request: Request) -> Any:
@@ -34,9 +43,9 @@ def index(request: Request) -> Any:
     return HTMLResponse(content=body)
 
 @app.post("/predict", response_model=PredictionResults, status_code=200)
-async def predict(input_data: schemas.MultipleDataInputs) -> Any:
+async def predict(input_data: MultipleDataInputs) -> Any:
     """
-    Survival predictions with the titanic_model
+    prediction
     """
 
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))

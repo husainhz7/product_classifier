@@ -2,7 +2,6 @@
 from config.core import config
 from processing.data_manager import load_dataset, save_pipeline
 
-import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.pipeline import Pipeline
