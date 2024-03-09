@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 from typing import Any,Optional, List
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
@@ -13,7 +19,7 @@ class PredictionResults(BaseModel):
     errors: Optional[Any]
     version: str
     #predictions: Optional[List[int]]
-    predictions: Optional[int]
+    predictions: Optional[str]
 
 class DataInputSchema(BaseModel):
     main_category: Optional[str]
@@ -54,7 +60,7 @@ async def predict(input_data: MultipleDataInputs) -> Any:
 
     if results["errors"] is not None:
         raise HTTPException(status_code=400, detail=json.loads(results["errors"]))
-
+    
     return results
 
 app.add_middleware(

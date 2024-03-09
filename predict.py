@@ -1,14 +1,13 @@
 
 from typing import Union
 import pandas as pd
-import numpy as np
 
 from processing.data_manager import load_pipeline, __version__
 from config.core import config
 from processing.data_manager import pre_pipeline_preparation
 
 pipeline_file_name = f"{config.pipeline_save_file}{__version__}.pkl"
-titanic_pipe= load_pipeline(file_name=pipeline_file_name)
+product_pipe= load_pipeline(file_name=pipeline_file_name)
 
 
 def make_prediction(*,input_data:Union[pd.DataFrame, dict]) -> dict:
@@ -16,11 +15,11 @@ def make_prediction(*,input_data:Union[pd.DataFrame, dict]) -> dict:
 
     validated_data = pre_pipeline_preparation(data_frame=pd.DataFrame(input_data))
     #print(validated_data)
-    results = {"predictions": None, "version": __version__}
+    results = {"predictions": None, "version": __version__, "errors": None}
     
-    predictions = titanic_pipe.predict(validated_data)
+    predictions = product_pipe.predict(validated_data)
 
-    results = {"predictions": predictions,"version": __version__}
+    results = {"predictions": predictions[0],"version": __version__, "errors": None}
     print(results)
 
     return results
